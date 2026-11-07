@@ -482,6 +482,17 @@ form.addEventListener('submit',e=>{
   if(!win) location.href=url;   // если браузер заблокировал новую вкладку — открываем в этой
 });
 
+/* всегда открываем сайт с самого верха и не пишем #раздел в адрес */
+if('scrollRestoration' in history) history.scrollRestoration='manual';
+if(location.hash) history.replaceState(null,'',location.pathname+location.search);
+window.scrollTo(0,0);
+addEventListener('load',()=>setTimeout(()=>window.scrollTo(0,0),0));
+document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{
+  const id=a.getAttribute('href'); e.preventDefault();
+  if(id==='#'){window.scrollTo({top:0,behavior:'smooth'});return}
+  const el=document.querySelector(id); if(!el) return;
+  window.scrollTo({top:el.getBoundingClientRect().top+scrollY-70,behavior:'smooth'});
+}));
 /* шапка, бургер, анимации */
 const header=document.getElementById('top'),burger=document.getElementById('burger'),links=document.getElementById('links');
 addEventListener('scroll',()=>header.classList.toggle('scrolled',scrollY>40));
